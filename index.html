@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NE300 顯微鏡互動教室</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <button class="hbtn" id="btn-nav" title="展開/收合章節">☰</button>
+  <span class="logo">TEKFAR</span>
+  <h1>NE300 複式光學顯微鏡｜互動學習與虛擬實驗</h1>
+  <span class="sp"></span>
+  <button class="hbtn" id="btn-help">使用說明</button>
+  <button class="hbtn" id="btn-reset" title="把顯微鏡恢復到收納狀態">重設顯微鏡</button>
+  <button class="hbtn" id="btn-set">設定</button>
+</header>
+<div id="app">
+  <nav id="nav"></nav>
+  <main id="main">
+    <div id="bench">
+      <div id="bench-top">
+        <div id="three-wrap">
+          <canvas id="three"></canvas>
+          <div class="cam-btns" id="cam-btns"></div>
+          <div id="gap-badge"></div>
+          <div id="tooltip"></div>
+          <div class="hint3d">拖曳空白處旋轉｜右鍵平移｜滾輪縮放｜拖曳或滾動旋鈕可直接操作</div>
+        </div>
+        <div id="eye-wrap">
+          <canvas id="eyeview"></canvas>
+          <div id="eye-label"></div>
+          <div id="eye-meter"></div>
+          <div id="eye-msg"></div>
+        </div>
+      </div>
+      <div id="controls"></div>
+    </div>
+    <div id="scene-wrap" hidden><canvas id="scene"></canvas></div>
+  </main>
+  <aside id="lesson"></aside>
+</div>
+<script src="js/vendor/three.min.js"></script>
+<script>window.THREE || document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"><\/script>');</script>
+<script src="js/util.js"></script>
+<script src="js/state.js"></script>
+<script src="js/specimens.js"></script>
+<script src="js/orbit.js"></script>
+<script src="js/model.js"></script>
+<script src="js/view.js"></script>
+<script src="js/hands.js"></script>
+<script src="js/bench.js"></script>
+<script src="js/wizard.js"></script>
+<script src="js/scenes.js"></script>
+<script src="js/lessons.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 依據本校使用的 **TEKFAR NE300**（`TEKFAR NE300.pdf` 規格）製作的 3D 模型＋互動網頁。
 
 ## 開啟方式
+- **線上版（GitHub Pages）**：<https://hmjvaliney.github.io/NE300-microscope/>  學生用電腦、平板瀏覽器打開網址即可使用。
 - 直接雙擊 **`index.html`**（建議 Chrome 或 Edge）。不需要網路、不需要安裝。
 - 整個資料夾可複製到隨身碟、電腦教室或放到學校網站（GitHub Pages、Google Sites 嵌入等）。
 - 3D 函式庫已放在 `js/vendor/three.min.js`；若此檔遺失，有網路時會自動改從 CDN 載入。

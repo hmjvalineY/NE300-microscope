@@ -1,6 +1,6 @@
 /* 離線快取：安裝後沒有網路也能使用。
    每次更新網站內容時，請把 VERSION 改一個新值，學生端就會出現「有新版本」提示。 */
-const VERSION = 'ne300-v1';
+const VERSION = 'ne300-v2';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/style.css',
   './js/vendor/three.min.js', './js/util.js', './js/state.js', './js/specimens.js', './js/orbit.js',

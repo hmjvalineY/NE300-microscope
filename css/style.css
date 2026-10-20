@@ -290,3 +290,18 @@ body.m #wiz .wiz-btns .btn{padding:4px 8px;font-size:12px}
   body.m #eye-wrap.inset{width:min(34vw,26vh)!important;height:min(34vw,26vh)!important}
 }
 #eye-wrap.inset .eye-touch-hint{display:none}
+
+/* 手機：選取零件後的操作條 */
+#sel-pill{position:absolute;left:50%;transform:translateX(-50%);top:38px;z-index:6;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;background:rgba(19,41,75,.94);color:#fff;border-radius:12px;padding:5px 8px;box-shadow:0 4px 16px rgba(0,0,0,.3);max-width:calc(100% - 12px);font-size:12.5px}
+#sel-pill[hidden]{display:none}
+#sel-pill .sp-name{font-weight:700;color:#ffd257;white-space:nowrap}
+#sel-pill .sp-how{color:#cfdcf2;white-space:nowrap}
+#sel-pill .btn{padding:7px 12px;font-size:13px;font-weight:700;touch-action:none;user-select:none;-webkit-user-select:none}
+#sel-pill .sp-x{padding:7px 10px;background:#33476a;color:#fff;border-color:#4a6390}
+body.fs-mode #sel-pill{top:46px}
+body.m #sel-pill .sp-how{display:none}
+@media (min-height:561px) and (min-width:761px){ #sel-pill .sp-how{display:inline} }
+body.m #sel-pill{flex-wrap:nowrap;gap:4px;padding:4px 6px;top:34px}
+body.m #sel-pill .sp-name{font-size:12px}
+body.m #sel-pill .btn{padding:6px 9px;font-size:12px;white-space:nowrap}
+body.m.fs-mode #sel-pill{top:40px}

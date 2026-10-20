@@ -204,24 +204,73 @@
       return false;
     };
     const TURN = ['coarse', 'fine', 'bright', 'aperture', 'knobX', 'knobY', 'eyepiece', 'nosepiece', 'tube', 'eyepieceL'];
+    const CLICKABLE = ['power', 'clip', 'slide', 'holder', 'lock', 'obj0', 'obj1', 'obj2', 'obj3'];
+    const interactive = p => TURN.includes(p) || CLICKABLE.includes(p);
+    // ---- 手機：先點選零件（選取），再在畫面任何地方滑動來操作 ----
+    let sel = null, touches = 0;
+    const SEL_INFO = {
+      coarse: ['上下滑動', '▲ 上升', '▼ 下降', 0.05], fine: ['上下滑動', '▲ 上升', '▼ 下降', 0.1],
+      bright: ['上下滑動', '▲ 調亮', '▼ 調暗', 0.15], aperture: ['左右滑動', '▶ 開大', '◀ 縮小', 0.035],
+      knobX: ['上下滑動', '→ 右移', '← 左移', 0.06], knobY: ['上下滑動', '↑ 往裡', '↓ 往外', 0.06],
+      eyepiece: ['左右滑動', '↻ 順轉', '↺ 逆轉', 0.04], tube: ['左右滑動', '◀▶ 拉開', '▶◀ 靠攏', 0.125], eyepieceL: ['左右滑動', '◀▶ 拉開', '▶◀ 靠攏', 0.125],
+      nosepiece: ['左右滑動', '下一個物鏡', '上一個物鏡', 0]
+    };
+    const pill = NE.h('div', { id: 'sel-pill' }); pill.hidden = true; cv.parentNode.appendChild(pill);
+    function stepSel(sign) {
+      if (!sel) return;
+      if (sel === 'nosepiece') { NE.setObj((NE.S.obj + (sign > 0 ? 1 : 3)) % 4); return; }
+      turnPart(sel, sign * SEL_INFO[sel][3], false);
+      NE.handsAway = performance.now();
+    }
+    function holdBtn(label, sign) {
+      const b = NE.h('button', { class: 'btn' }, label);
+      let t1 = 0, t2 = 0;
+      const stop = () => { clearTimeout(t1); clearInterval(t2); };
+      b.addEventListener('pointerdown', e => { e.preventDefault(); stepSel(sign); t1 = setTimeout(() => { t2 = setInterval(() => stepSel(sign), 70); }, 350); });
+      ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
+      return b;
+    }
+    NE.selectPart = function (part) {
+      if (part && !SEL_INFO[part]) part = null;
+      sel = part;
+      model.setHover(part);
+      pill.hidden = !part;
+      if (!part) return;
+      const [how, up, dn] = SEL_INFO[part];
+      pill.innerHTML = `<span class="sp-name">🎯 ${PART_HINT[part] ? PART_HINT[part][0] : part}</span><span class="sp-how">在 3D 畫面任何地方<b>${how}</b>來操作</span>`;
+      pill.appendChild(holdBtn(dn, -1)); pill.appendChild(holdBtn(up, 1));
+      const x = NE.h('button', { class: 'btn sp-x', title: '取消選取' }, '✕'); x.onclick = () => NE.selectPart(null); pill.appendChild(x);
+    };
+    NE.selectedPart = () => sel;
     cv.addEventListener('pointerdown', e => {
       NE.handsAway = performance.now();
-      const part = model.pick(e.clientX, e.clientY);
-      drag = { part, x: e.clientX, y: e.clientY, moved: false, acc: 0, turn: (TURN.includes(part) || (part === 'slide' && NE.S.slide && NE.S.clipOpen)) && e.button === 0, side: (part === 'tube' || part === 'eyepieceL') ? (e.clientX >= model.hingeScreenX() ? 1 : -1) : 1 };
+      const touch = e.pointerType !== 'mouse';
+      if (touch) touches++;
+      if (touch && touches > 1) { if (drag) drag.turn = false; return; }   // 兩指：交給縮放／旋轉
+      let part = touch ? model.pickNear(e.clientX, e.clientY, 26, interactive) : model.pick(e.clientX, e.clientY);
+      let target = part;
+      // 已選取零件時，在空白處或非操作零件上滑動＝操作被選取的零件
+      if (touch && sel && !interactive(part)) target = sel;
+      const canTurn = TURN.includes(target) || (target === 'slide' && NE.S.slide && NE.S.clipOpen);
+      drag = { part, target, x: e.clientX, y: e.clientY, moved: false, acc: 0, touch, turn: canTurn && e.button === 0, side: (target === 'tube' || target === 'eyepieceL') ? (target === sel && part !== sel ? 1 : (e.clientX >= model.hingeScreenX() ? 1 : -1)) : 1 };
+      if (touch && TURN.includes(part)) model.setHover(part);
       if (drag.turn) { e.preventDefault(); cv.setPointerCapture(e.pointerId); }
     }, true);
+    const touchEnd = e => { if (e.pointerType !== 'mouse') touches = Math.max(0, touches - 1); };
+    cv.addEventListener('pointercancel', e => { touchEnd(e); drag = null; }, true);
     cv.addEventListener('pointermove', e => {
       if (drag) {
         NE.handsAway = performance.now();
         const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
         if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
         if (drag.turn) {
-          if (drag.part === 'nosepiece') {
+          const tp = drag.target;
+          if (tp === 'nosepiece') {
             drag.acc += dx; if (Math.abs(drag.acc) > 45) { NE.setObj((NE.S.obj + (drag.acc > 0 ? 1 : 3)) % 4); drag.acc = 0; }
           } else {
-            const horiz = ['aperture', 'eyepiece', 'tube', 'eyepieceL'].includes(drag.part);
+            const horiz = ['aperture', 'eyepiece', 'tube', 'eyepieceL'].includes(tp);
             const d = horiz ? dx * drag.side : -dy;
-            turnPart(drag.part, d * 0.02, e.shiftKey);
+            turnPart(tp, d * (drag.touch ? 0.026 : 0.02), e.shiftKey);
           }
           drag.x = e.clientX; drag.y = e.clientY;
         }
@@ -238,8 +287,17 @@
     }, true);
     cv.addEventListener('pointerleave', () => { model.setHover(null); tip.style.display = 'none'; });
     cv.addEventListener('pointerup', e => {
+      touchEnd(e);
       if (!drag) return;
       const d = drag; drag = null;
+      if (d.touch) {
+        if (d.moved) { if (TURN.includes(d.target) && d.target !== sel) NE.selectPart(d.target); else model.setHover(sel); return; }
+        // 點一下：旋鈕類＝選取；按鈕類＝直接操作；點空白處＝取消選取
+        if (TURN.includes(d.part)) { NE.selectPart(d.part === sel ? null : d.part); return; }
+        if (!d.part || !interactive(d.part)) { if (sel) { NE.selectPart(null); return; } }
+        clickPart(d.part);
+        return;
+      }
       if (d.moved) return;
       clickPart(d.part);
     }, true);

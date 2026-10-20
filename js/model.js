@@ -467,6 +467,21 @@
       return hits.length ? hits[0].object.userData.part : null;
     }
     function isShown(o) { while (o) { if (!o.visible) return false; o = o.parent; } return true; }
+    // 手指點選：在半徑 radius（像素）內一圈圈找，優先回傳可操作的零件（離中心愈近愈優先）
+    function pickNear(clientX, clientY, radius, prefer) {
+      const c = pick(clientX, clientY);
+      if (c && (!prefer || prefer(c))) return c;
+      let fallback = c;
+      for (const rr of [radius * 0.35, radius * 0.7, radius]) {
+        for (let k = 0; k < 12; k++) {
+          const a = k / 12 * Math.PI * 2;
+          const p = pick(clientX + Math.cos(a) * rr, clientY + Math.sin(a) * rr);
+          if (p && (!prefer || prefer(p))) return p;
+          if (p && !fallback) fallback = p;
+        }
+      }
+      return fallback;
+    }
     let hover = null, flash = null;
     function setHover(part) {
       if (part === hover) return;
@@ -527,6 +542,6 @@
       const v = hinge.clone().project(camera), r = canvas.getBoundingClientRect();
       return r.left + (v.x + 1) / 2 * r.width;
     }
-    return { frame, view, focusPart, pick, hingeScreenX, hooks, pulseHighlight, partCenter, lookAt, info, fitK, setHover, highlight, orbit, camera, renderer, scene, invalidate: () => { needs = true; } };
+    return { frame, view, focusPart, pick, pickNear, hingeScreenX, hooks, pulseHighlight, partCenter, lookAt, info, fitK, setHover, highlight, orbit, camera, renderer, scene, invalidate: () => { needs = true; } };
   };
 })(window.NE);

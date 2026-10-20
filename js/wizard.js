@@ -281,7 +281,7 @@
   W.stop = function () {
     demoToken++; W.on = false; NE.wizardOn = false;
     if (box) box.style.display = 'none';
-    NE.hands.set(null); NE.model.highlight(null);
+    NE.hands.set(null); NE.model.highlight(null); NE.selectPart && NE.selectPart(null);
     NE.$('#eye-wrap').classList.remove('wiz-eye');
     clearTimeout(advTimer); refreshBar();
   };
@@ -291,6 +291,7 @@
     W.i = i; const st = STEPS[i];
     NE.hands.set(st.hands || null);
     NE.model.pulseHighlight(st.part || null);
+    if (NE.isMobile && NE.isMobile() && NE.selectPart) NE.selectPart(st.part || null);
     st.cam && st.cam();
     NE.$('#eye-wrap').classList.toggle('wiz-eye', !!st.eye);
     box.querySelector('.wiz-step').textContent = st.final ? '完成' : `步驟 ${i} / ${STEPS.length - 2}`;
@@ -303,7 +304,9 @@
     }
     box.querySelector('.wiz-text').innerHTML = text;
     const hint = box.querySelector('.wiz-hint');
-    hint.innerHTML = st.hint ? '🖱 ' + st.hint : ''; hint.style.display = st.hint ? '' : 'none';
+    const mob = NE.isMobile && NE.isMobile() && NE.selectedPart && NE.selectedPart();
+    const h = mob ? '👆 已幫你選好「' + (NE.PART_HINT[mob] ? NE.PART_HINT[mob][0] : mob) + '」：在 3D 畫面任何地方滑動，或按上方操作條的按鈕。' : (st.hint ? '🖱 ' + st.hint : '');
+    hint.innerHTML = h; hint.style.display = h ? '' : 'none';
     const act = box.querySelector('.wiz-act'); act.innerHTML = '';
     (st.act || []).forEach(a => act.appendChild(NE.btn(a.label, a.fn, 'primary sm')));
     box.querySelector('[data-a=prev]').disabled = i === 0;

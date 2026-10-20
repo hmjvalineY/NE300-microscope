@@ -30,6 +30,7 @@
   FS.enter = function () {
     if (FS.on) return;
     FS.on = true;
+    NE.closeDrawers && NE.closeDrawers();
     document.body.classList.add('fs-mode');
     const tw = NE.$('#three-wrap'), eye = NE.$('#eye-wrap');
     FS._eyeParent = eye.parentNode; tw.appendChild(eye); eye.classList.add('inset');

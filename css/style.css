@@ -198,3 +198,95 @@ body.fs-mode #three-wrap .cam-btns{top:58px}
 #eye-wrap.inset #eye-msg{bottom:38px;font-size:12px}
 #fs-bar button{white-space:nowrap}
 #fs-bar button:disabled{opacity:.4;cursor:not-allowed}
+
+/* ===================== 手機版（body.m：橫向手機高度 ≤ 560 或寬度 ≤ 760） ===================== */
+header h1 .t-short{display:none}
+.m-only{display:none}
+#rotate-hint,#drawer-mask{display:none}
+body{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+body.m{--hh:42px;overscroll-behavior:none}
+html:has(body.m){height:100%}
+body.m header{height:var(--hh);gap:6px;padding:0 6px;padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}
+body.m header .logo{font-size:15px}
+body.m header h1{font-size:15px;white-space:nowrap}
+body.m header h1 .t-long{display:none}
+body.m header h1 .t-short{display:inline}
+body.m header .hbtn{padding:5px 8px;font-size:13px;white-space:nowrap}
+body.m .m-only{display:inline-block}
+body.m #btn-reset,body.m #btn-help{display:none}
+body.m.lesson-open #btn-lesson,body.m.ctl-open #btn-ctl{background:#2e7dd7;border-color:#7fb3ff}
+body.m #app{display:block;height:calc(100% - var(--hh));height:calc(100dvh - var(--hh))}
+body.m main#main{height:100%}
+/* 章節：左側抽屜 */
+body.m nav#nav{position:fixed;left:0;top:var(--hh);bottom:0;width:236px;z-index:46;transform:translateX(-105%);transition:transform .22s;box-shadow:4px 0 18px rgba(0,0,0,.3);padding-left:env(safe-area-inset-left)}
+body.m nav#nav .item .tx,body.m nav#nav .sec{display:inline-block}
+body.m nav#nav .sec{display:block}
+body.m.nav-open nav#nav{transform:none}
+/* 說明與任務：右側抽屜 */
+body.m aside#lesson{position:fixed;right:0;top:var(--hh);bottom:0;width:min(460px,88vw);z-index:46;transform:translateX(105%);transition:transform .22s;box-shadow:-4px 0 18px rgba(0,0,0,.3);padding:8px 14px 60px;padding-right:max(14px,env(safe-area-inset-right));border:0;font-size:14px}
+body.m.lesson-open aside#lesson{transform:none}
+body.m aside#lesson h2{font-size:17px}
+.lesson-close{display:none}
+body.m .lesson-close{display:flex;position:sticky;top:-8px;z-index:3;justify-content:space-between;align-items:center;background:#fff;margin:-8px -14px 6px;padding:6px 10px 6px 14px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+/* 操作面板：底部抽屜 */
+body.m #controls{position:fixed;left:0;right:0;bottom:0;z-index:44;max-height:62%;overflow:auto;background:rgba(233,237,243,.97);box-shadow:0 -4px 18px rgba(0,0,0,.25);transform:translateY(105%);transition:transform .22s;zoom:1;padding:6px;padding-bottom:max(6px,env(safe-area-inset-bottom));border-radius:14px 14px 0 0;justify-content:flex-start;gap:5px}
+body.m.ctl-open #controls{transform:none}
+body.m #controls .cgroup{padding:4px 6px}
+body.m.nav-open #drawer-mask,body.m.lesson-open #drawer-mask{display:block;position:fixed;inset:var(--hh) 0 0 0;z-index:45;background:rgba(10,20,40,.35)}
+/* 實驗台：3D 與目鏡視野左右並排 */
+body.m #bench{height:100%}
+body.m #bench-top{padding:4px;gap:4px;padding-left:max(4px,env(safe-area-inset-left));padding-right:max(4px,env(safe-area-inset-right))}
+body.m #three-wrap{border-radius:8px}
+body.m #three-wrap .cam-btns{top:4px;left:4px;gap:3px}
+body.m .cam-btns button{font-size:11px;padding:3px 6px}
+body.m .cam-btns .cb-extra{display:none}
+body.m #three-wrap .hint3d{font-size:10px;bottom:3px;left:4px}
+body.m #gap-badge{font-size:10.5px;bottom:22px;right:4px;padding:2px 6px}
+body.m #eye-wrap{border-radius:8px}
+body.m #eye-label{display:none}
+body.m #eye-meter{font-size:10px;right:5px;top:4px}
+body.m #eye-meter .bar{width:46px;height:6px}
+body.m #eye-msg{font-size:11.5px;bottom:30px}
+body.m #eye-wrap .eye-tools{left:5px;bottom:5px}
+body.m #eye-wrap .eye-tools button{font-size:11px;padding:3px 7px}
+.eye-touch-hint{display:none}
+body.m .eye-touch-hint{display:block;position:absolute;right:6px;bottom:6px;font-size:10px;color:#9aa6b8;pointer-events:none}
+body.m #tooltip{display:none!important}
+/* 實驗場景（水埋玻片、染色） */
+body.m #scene-wrap{padding:4px}
+/* 提示與對話框 */
+body.m #toast{top:calc(var(--hh) + 4px)}
+body.m #toast .t{font-size:13px;padding:6px 12px;max-width:86vw}
+body.m .modal{width:94%;max-height:90%;padding:12px 14px}
+body.m .slidebox{grid-template-columns:repeat(3,1fr);gap:6px}
+body.m .slidebox .sl{font-size:12px;padding:6px}
+/* 全螢幕＋教學精靈（手機） */
+body.m.fs-mode #three-wrap .cam-btns{display:none}
+body.m #fs-bar{top:4px;max-width:calc(100% - 8px);overflow-x:auto;padding:3px 5px;gap:3px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+body.m #fs-bar button{font-size:11.5px;padding:3px 7px}
+body.m #eye-wrap.inset{top:40px;right:6px;width:min(44vh,30vw)!important;height:min(44vh,30vw)!important;border-width:2px;border-radius:10px}
+body.m #eye-wrap.inset::before{display:none}
+body.m.fs-mode #gap-badge{bottom:6px;right:6px}
+body.m #wiz{left:6px;bottom:6px;width:min(470px,60vw);max-height:calc(100% - 46px);display:flex;flex-direction:column;border-radius:12px;font-size:13px}
+body.m #wiz .wiz-main{padding:6px 10px 2px;gap:6px;overflow-y:auto;min-height:0}
+body.m #wiz .wiz-mascot{width:44px}
+body.m #wiz .wiz-mascot svg{width:44px;height:44px}
+body.m #wiz .wiz-title{font-size:15px}
+body.m #wiz .wiz-text{line-height:1.5}
+body.m #wiz .wiz-hint{font-size:12px;padding:4px 6px}
+body.m #wiz .wiz-btns{padding:4px 10px 6px;flex:none}
+body.m #wiz .wiz-btns .btn{padding:4px 8px;font-size:12px}
+/* 直式手機：提示橫放；若仍要直式則上下排列 */
+@media (orientation:portrait){
+  body.m:not(.portrait-ok) #rotate-hint{display:flex;position:fixed;inset:0;z-index:90;background:rgba(19,41,75,.96);color:#fff;align-items:center;justify-content:center;text-align:center;padding:24px}
+  #rotate-hint .rh-box{max-width:320px}
+  #rotate-hint .rh-ic{font-size:54px;margin-bottom:8px;animation:rh 1.8s ease-in-out infinite}
+  #rotate-hint b{font-size:20px;display:block;margin-bottom:6px}
+  #rotate-hint p{font-size:14px;color:#c9d7ee;line-height:1.6}
+  @keyframes rh{0%,30%{transform:rotate(0)}60%,100%{transform:rotate(90deg)}}
+  body.m #bench-top{flex-direction:column}
+  body.m #eye-wrap{align-self:center}
+  body.m #wiz{width:calc(100% - 12px);max-height:48%}
+  body.m #eye-wrap.inset{width:min(34vw,26vh)!important;height:min(34vw,26vh)!important}
+}
+#eye-wrap.inset .eye-touch-hint{display:none}

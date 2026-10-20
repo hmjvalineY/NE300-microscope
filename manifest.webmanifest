@@ -1,0 +1,20 @@
+{
+  "name": "NE300 顯微鏡互動教室",
+  "short_name": "NE300顯微鏡",
+  "description": "TEKFAR NE300 複式光學顯微鏡 3D 模型與互動教學：操作、光圈、景深、水埋玻片、染色、目鏡測微器校正與測量",
+  "lang": "zh-Hant",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "landscape",
+  "background_color": "#13294b",
+  "theme_color": "#13294b",
+  "categories": ["education"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

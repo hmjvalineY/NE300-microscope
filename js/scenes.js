@@ -59,6 +59,15 @@
     clock(c) { c.fillStyle = '#fff'; c.strokeStyle = '#555'; c.lineWidth = 3; c.beginPath(); c.arc(0, 0, 22, 0, 7); c.fill(); c.stroke(); c.beginPath(); c.moveTo(0, 0); c.lineTo(0, -15); c.moveTo(0, 0); c.lineTo(10, 4); c.stroke(); }
   };
 
+  // 畫面上方顯示「目前步驟」（手機上說明抽屜收起時也看得到）
+  function stepBanner(c, cur) {
+    if (!cur) return;
+    const txt = cur.done ? '✔ 全部完成！可以放到顯微鏡上觀察' : `步驟 ${cur.i + 1}/${cur.n}：${cur.t.replace(/<[^>]+>/g, '')}`;
+    c.font = font(19, '700');
+    const w = Math.min(860, c.measureText(txt).width + 36), x = W - 20 - w;
+    c.fillStyle = cur.done ? 'rgba(22,121,74,0.92)' : 'rgba(19,41,75,0.9)'; rr(c, x, 12, w, 38, 10); c.fill();
+    c.fillStyle = '#fff'; c.textAlign = 'left'; c.textBaseline = 'middle'; c.fillText(txt, x + 18, 31, w - 30);
+  }
   function tray(c, tools, sel) {
     c.fillStyle = 'rgba(250,246,238,0.95)'; rr(c, 20, 572, W - 40, 132, 14); c.fill();
     c.strokeStyle = '#c8b99c'; c.stroke();
@@ -130,6 +139,7 @@
   function drawSteps() {
     const L = stepList();
     let cur = L.findIndex(x => !x[1]);
+    st.cur = cur < 0 ? { done: true } : { i: cur, n: L.length, t: L[cur][0] };
     NE.$('#steps', panel).innerHTML = '<ul class="tasks">' + L.map((s, i) => `<li class="${s[1] ? 'ok' : ''} ${i === cur ? 'cur' : ''}"><span class="ck">${s[1] ? '✓' : i + 1}</span><div>${s[0]}</div></li>`).join('') + '</ul>';
     if (st.cover && !st.lower && !st.done && !st.excess) finish();
   }
@@ -290,6 +300,7 @@
     if (!st) return;
     table(c);
     label(c, `製作「${TNAME[st.tissue]}」水埋玻片`, 30, 30, 22, '#24395e', 'left');
+    stepBanner(c, st.cur);
     // 玻片
     const k = SL.k, x0 = SL.x - 38 * k, y0 = SL.y - 13 * k;
     c.fillStyle = 'rgba(0,0,0,0.08)'; c.fillRect(x0 + 6, y0 + 8, 76 * k, 26 * k);
@@ -404,6 +415,7 @@
       ['靜置約 1 分鐘，讓染液充分作用', ss.waited],
     ];
     const cur = L.findIndex(x => !x[1]);
+    ss.cur = cur < 0 ? { done: true } : { i: cur, n: L.length, t: L[cur][0] };
     NE.$('#steps', sp).innerHTML = '<ul class="tasks">' + L.map((s, i) => `<li class="${s[1] ? 'ok' : ''} ${i === cur ? 'cur' : ''}"><span class="ck">${s[1] ? '✓' : i + 1}</span><div>${s[0]}</div></li>`).join('') + '</ul>' +
       `<div class="readout" style="display:inline-block;margin:4px 0">染液已流過：${Math.round(ss.cov * 100)}%</div>`;
     if (!ss.done && ss.cov > 0.05 && (ss.waited || ss.cov > 0.95)) showFinish();
@@ -452,6 +464,7 @@
     if (!ss) return;
     table(c);
     label(c, `染色：${TNAME[ss.tissue]}`, 30, 30, 22, '#24395e', 'left');
+    stepBanner(c, ss.cur);
     label(c, '（俯視放大圖：中央為蓋玻片）', 30, 60, 14, '#666', 'left');
     // 流動
     if (ss.supply > 0 && ss.suction > 0 && ss.cov < 1) {

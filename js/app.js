@@ -41,7 +41,7 @@
     NE.CHAPTERS.forEach(c => {
       if (c.sec) nav.appendChild(NE.h('div', { class: 'sec' }, c.sec));
       const it = NE.h('div', { class: 'item', 'data-id': c.id, title: c.title }, `<span class="ic">${c.ic}</span><span class="tx">${c.title}</span>`);
-      it.onclick = () => NE.go(c.id);
+      it.onclick = () => { NE.go(c.id); if (NE.isMobile()) { NE.drawer('nav', false); if (c.mode !== 'scene') NE.drawer('lesson', true); } };
       nav.appendChild(it);
     });
   }
@@ -74,12 +74,13 @@
     }
     NE.initBench();
     NE.initWizard();
+    NE.initMobile();
     buildNav();
     NE.on('change', runChecks);
     NE.on('eyeRendered', throttled);
     NE.on('partClick', p => cur && cur.onPart && cur.onPart(p));
     NE.on('eyeClick', e => cur && cur.onEye && cur.onEye(e));
-    NE.$('#btn-nav').onclick = () => { document.body.classList.toggle(window.innerWidth <= 1440 ? 'nav-expanded' : 'nav-collapsed'); setTimeout(() => NE.model.invalidate(), 50); };
+    NE.$('#btn-nav').onclick = () => { if (NE.isMobile()) { NE.drawer('nav'); return; } document.body.classList.toggle(window.innerWidth <= 1440 ? 'nav-expanded' : 'nav-collapsed'); setTimeout(() => NE.model.invalidate(), 50); };
     NE.$('#btn-reset').onclick = () => NE.resetScope();
     NE.$('#btn-set').onclick = settings;
     NE.$('#btn-help').onclick = () => NE.modal('使用說明', `<ul style="line-height:1.8">
@@ -87,6 +88,8 @@
       <li><b>3D 模型</b>：拖曳空白處旋轉、右鍵平移、滾輪縮放；拖曳或滾動旋鈕可直接操作。</li>
       <li><b>目鏡視野</b>：滾輪＝細調（Shift＝粗調）；🔍 放大鏡方便讀刻度。</li>
       <li>鍵盤：方向鍵移動玻片、PgUp/PgDn 粗調、+/- 細調、1–4 換物鏡。</li>
+      <li><b>手機</b>：請橫放使用；左上 ☰ 選章節、右上「📖 說明」看任務、「🎛 操作」開操作面板；在目鏡視野上下拖曳＝細調。</li>
+      <li><b>安裝成 App</b>：按右上「📲 安裝 App」（iPhone 請用 Safari →分享→加入主畫面），安裝後不需網路也能使用。</li>
       <li>依據：TEKFAR NE300 規格（物鏡 PLAN 4X/10X/40X/100X、目鏡 10X FN20、粗調 37.7 mm/圈、細調 0.2 mm/圈）。</li></ul>`, [{ text: '開始使用', primary: true }]);
     const id = (location.hash || '').slice(1);
     NE.go(NE.CHAPTERS.some(c => c.id === id) ? id : 'intro');

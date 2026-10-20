@@ -271,7 +271,18 @@
     const cv = NE.$('#eyeview');
     const toCanvas = e => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * view.N, y: (e.clientY - r.top) / r.height * view.N }; };
     cv.addEventListener('wheel', e => { e.preventDefault(); if (e.shiftKey) NE.turnCoarse(e.deltaY < 0 ? 0.03 : -0.03); else NE.turnFine(e.deltaY < 0 ? 0.12 : -0.12); }, { passive: false });
+    // 在視野上上下拖曳＝細調（手機沒有滾輪）；拖曳過就不算點選
+    let fd = null, dragged = false;
+    cv.addEventListener('pointerdown', e => { if (lensOn && e.pointerType !== 'mouse') return; fd = { y: e.clientY, y0: e.clientY }; dragged = false; cv.setPointerCapture(e.pointerId); });
+    cv.addEventListener('pointermove', e => {
+      if (!fd) return;
+      if (Math.abs(e.clientY - fd.y0) > 6) dragged = true;
+      if (dragged) { NE.turnFine((fd.y - e.clientY) * 0.012); fd.y = e.clientY; }
+    });
+    const fEnd = () => { fd = null; };
+    cv.addEventListener('pointerup', fEnd); cv.addEventListener('pointercancel', fEnd);
     cv.addEventListener('click', e => {
+      if (dragged) { dragged = false; return; }
       const p = toCanvas(e);
       NE.emit('eyeClick', { canvas: p, slide: view.toSlide(p.x, p.y) });
     });
@@ -281,7 +292,7 @@
     const lensView = NE.View(lens, { lens: true, size: 360 });
     let lensOn = false, lastE = null, raf = 0;
     const btn = NE.h('button', { title: '放大檢視視野局部（4 倍），方便讀刻度' }, '🔍 放大鏡');
-    btn.onclick = () => { lensOn = !lensOn; btn.style.color = lensOn ? '#ffd257' : ''; if (!lensOn) lens.style.display = 'none'; else NE.toast('把滑鼠移到視野上即可放大局部'); };
+    btn.onclick = () => { lensOn = !lensOn; btn.style.color = lensOn ? '#ffd257' : ''; if (!lensOn) lens.style.display = 'none'; else NE.toast(NE.isMobile && NE.isMobile() ? '手指按住視野並移動，就會放大那個位置' : '把滑鼠移到視野上即可放大局部'); };
     const shot = NE.h('button', { title: '把目前視野存成圖片' }, '📷 存圖');
     shot.onclick = () => { const a = document.createElement('a'); a.download = '顯微鏡視野.png'; a.href = cv.toDataURL('image/png'); a.click(); };
     const tools = NE.h('div', { class: 'eye-tools' }); tools.appendChild(btn); tools.appendChild(shot); NE.$('#eye-wrap').appendChild(tools);
@@ -340,8 +351,9 @@
     const top = NE.$('#bench-top'), eye = NE.$('#eye-wrap');
     new ResizeObserver(() => {
       const r = top.getBoundingClientRect(); if (!r.width) return;
-      const narrow = window.innerWidth <= 700;
-      const s = Math.max(200, Math.floor(narrow ? r.width - 16 : Math.min(r.height - 8, r.width * 0.56)));
+      const m = NE.isMobile && NE.isMobile(), portrait = window.innerHeight > window.innerWidth;
+      const s = m ? Math.max(140, Math.floor(portrait ? Math.min(r.width - 8, r.height * 0.5) : Math.min(r.height - 8, r.width * 0.5)))
+        : Math.max(200, Math.floor(window.innerWidth <= 700 ? r.width - 16 : Math.min(r.height - 8, r.width * 0.56)));
       eye.style.width = eye.style.height = s + 'px';
     }).observe(top);
     refresh();

@@ -2,21 +2,34 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#13294b">
+<meta name="description" content="TEKFAR NE300 複式光學顯微鏡 3D 模型與互動教學：操作、光圈、景深、水埋玻片、染色、目鏡測微器校正與測量">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NE300顯微鏡">
 <title>NE300 顯微鏡互動教室</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2313294b'/%3E%3Ccircle cx='32' cy='32' r='17' fill='%23fff'/%3E%3Ccircle cx='32' cy='32' r='9' fill='%232e7dd7'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="icons/favicon-64.png">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <header>
   <button class="hbtn" id="btn-nav" title="展開/收合章節">☰</button>
   <span class="logo">TEKFAR</span>
-  <h1>NE300 複式光學顯微鏡｜互動學習與虛擬實驗</h1>
+  <h1><span class="t-long">NE300 複式光學顯微鏡｜互動學習與虛擬實驗</span><span class="t-short">NE300 顯微鏡</span></h1>
   <span class="sp"></span>
+  <button class="hbtn" id="btn-install" hidden title="安裝成 App">📲 安裝 App</button>
+  <button class="hbtn m-only" id="btn-ctl" title="操作面板">🎛 操作</button>
+  <button class="hbtn m-only" id="btn-lesson" title="說明與任務">📖 說明</button>
   <button class="hbtn" id="btn-help">使用說明</button>
   <button class="hbtn" id="btn-reset" title="把顯微鏡恢復到收納狀態">重設顯微鏡</button>
   <button class="hbtn" id="btn-set">設定</button>
 </header>
+<div id="rotate-hint" hidden><div class="rh-box"><div class="rh-ic">📱↻</div><b>請把手機橫放使用</b><p>橫向畫面才放得下 3D 顯微鏡和目鏡視野。<br>（若已橫放仍看到此提示，請關閉手機的「直向鎖定」）</p><button class="btn" id="rh-ok">仍要直式使用</button></div></div>
+<div id="drawer-mask"></div>
 <div id="app">
   <nav id="nav"></nav>
   <main id="main">
@@ -55,6 +68,7 @@
 <script src="js/wizard.js"></script>
 <script src="js/scenes.js"></script>
 <script src="js/lessons.js"></script>
+<script src="js/mobile.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
